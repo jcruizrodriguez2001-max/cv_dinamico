@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV | Juan Carlos Ruiz Rodríguez</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js (Librería 3D) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&amp;family=Lato:wght@300;400;700&amp;display=swap" rel="stylesheet">
+    
+    <style>
+        /* CONFIGURACIÓN DE COLORES */
+        :root {
+            --bg-dark: #050a14;   
+            --card-bg: rgba(241, 245, 249, 0.95); /* Blanco Roto Sólido */
+            --card-border: rgba(255, 255, 255, 0.4);
+            --text-dark-main: #1e293b; 
+            --text-dark-muted: #475569; 
+            --text-light: #e2e8f0;
+        }
+
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Lato', sans-serif;
+            font-weight: 300;
+        }
+
+        h1, h2, h3, h4 { font-family: 'Playfair Display', serif; }
+
+        /* FONDO: Capa 0 */
+        #canvas-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; /* Al fondo */
+            background: linear-gradient(to bottom, #020408 0%, #0f172a 100%); /* Degradado de seguridad por si falla el 3D */
+        }
+
+        /* CONTENIDO: Capa 10 */
+        main {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* TARJETAS "PAPEL EJECUTIVO" */
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 3px;
+            padding: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); 
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            color: var(--text-dark-main);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            background: #ffffff;
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Colores de texto dentro de tarjetas */
+        .glass-card h3, .glass-card h4, .glass-card strong { color: #0f172a; }
+        .glass-card p, .glass-card li, .glass-card ul { color: #475569; }
+        .glass-card .card-divider { border-left: 1px solid #cbd5e1; padding-left: 1.5rem; }
+        .glass-card .border-b { border-color: #e2e8f0; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .glass-card { padding: 1.5rem; }
+            .card-divider { border-left: none; border-top: 1px solid #cbd5e1; padding-left: 0; padding-top: 1rem; margin-top: 1rem; }
+        }
+
+        /* ANIMACIONES (SYSTEMA ROBUSTO) */
+        /* Por defecto visible. JS añade la clase .js-hidden si carga bien */
+        .reveal {
+            opacity: 1; 
+            transform: translateY(0);
+            transition: all 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        
+        .reveal.js-hidden {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* BOTONES */
+        .cta-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 1rem 3rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        .cta-btn:hover { background: white; color: #050a14; }
+
+        /* SCROLL INDICATOR */
+        .scroll-indicator-text {
+            writing-mode: vertical-rl; text-orientation: mixed;
+            position: fixed; right: 40px; bottom: 40px;
+            text-transform: uppercase; letter-spacing: 4px;
+            font-size: 10px; color: rgba(255,255,255,0.3); z-index: 50;
+        }
+        .scroll-line-fixed {
+            position: fixed; right: 49px; bottom: 0;
+            width: 1px; height: 35px; background: rgba(255,255,255,0.3); z-index: 50;
+        }
+    </style>
+<style type="text/css">
+
+</style>
+<script>
+// Escribir aqui el código Javascript
+</script>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.container{width:100%}@media (min-width: 640px){.container{max-width:640px}}@media (min-width: 768px){.container{max-width:768px}}@media (min-width: 1024px){.container{max-width:1024px}}@media (min-width: 1280px){.container{max-width:1280px}}@media (min-width: 1536px){.container{max-width:1536px}}.absolute{position:absolute}.relative{position:relative}.bottom-0{bottom:0px}.left-0{left:0px}.right-0{right:0px}.top-0{top:0px}.z-10{z-index:10}.mx-auto{margin-left:auto;margin-right:auto}.mb-10{margin-bottom:2.5rem}.mb-16{margin-bottom:4rem}.mb-2{margin-bottom:0.5rem}.mb-20{margin-bottom:5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.mr-2{margin-right:0.5rem}.mr-4{margin-right:1rem}.mt-1{margin-top:0.25rem}.mt-12{margin-top:3rem}.mt-2{margin-top:0.5rem}.mt-20{margin-top:5rem}.mt-4{margin-top:1rem}.mt-8{margin-top:2rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.h-1{height:0.25rem}.h-8{height:2rem}.h-\[1px\]{height:1px}.h-full{height:100%}.min-h-screen{min-height:100vh}.w-1{width:0.25rem}.w-8{width:2rem}.w-\[70\%\]{width:70%}.w-full{width:100%}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.flex-1{flex:1 1 0%}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-end{align-items:flex-end}.items-center{align-items:center}.items-baseline{align-items:baseline}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-16{gap:4rem}.gap-3{gap:0.75rem}.gap-8{gap:2rem}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.rounded-full{border-radius:9999px}.rounded-sm{border-radius:0.125rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-l{border-left-width:1px}.border-r{border-right-width:1px}.border-t{border-top-width:1px}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.border-slate-300{--tw-border-opacity:1;border-color:rgb(203 213 225 / var(--tw-border-opacity, 1))}.border-white\/10{border-color:rgb(255 255 255 / 0.1)}.border-white\/30{border-color:rgb(255 255 255 / 0.3)}.border-white\/5{border-color:rgb(255 255 255 / 0.05)}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.bg-slate-200{--tw-bg-opacity:1;background-color:rgb(226 232 240 / var(--tw-bg-opacity, 1))}.bg-slate-400{--tw-bg-opacity:1;background-color:rgb(148 163 184 / var(--tw-bg-opacity, 1))}.bg-slate-600{--tw-bg-opacity:1;background-color:rgb(71 85 105 / var(--tw-bg-opacity, 1))}.p-10{padding:2.5rem}.p-12{padding:3rem}.p-4{padding:1rem}.px-10{padding-left:2.5rem;padding-right:2.5rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-20{padding-top:5rem;padding-bottom:5rem}.py-24{padding-top:6rem;padding-bottom:6rem}.py-32{padding-top:8rem;padding-bottom:8rem}.pb-4{padding-bottom:1rem}.pb-6{padding-bottom:1.5rem}.pl-4{padding-left:1rem}.pt-4{padding-top:1rem}.pt-8{padding-top:2rem}.text-center{text-align:center}.text-justify{text-align:justify}.font-serif{font-family:ui-serif, Georgia, Cambria, "Times New Roman", Times, serif}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-5xl{font-size:3rem;line-height:1}.text-6xl{font-size:3.75rem;line-height:1}.text-\[10px\]{font-size:10px}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-light{font-weight:300}.uppercase{text-transform:uppercase}.italic{font-style:italic}.leading-loose{line-height:2}.leading-none{line-height:1}.leading-relaxed{line-height:1.625}.tracking-\[0\.3em\]{letter-spacing:0.3em}.tracking-\[0\.4em\]{letter-spacing:0.4em}.tracking-\[0\.5em\]{letter-spacing:0.5em}.tracking-tight{letter-spacing:-0.025em}.tracking-wide{letter-spacing:0.025em}.tracking-wider{letter-spacing:0.05em}.tracking-widest{letter-spacing:0.1em}.text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity, 1))}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-white\/20{color:rgb(255 255 255 / 0.2)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}@media (min-width: 768px){.md\:mt-0{margin-top:0px}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:flex-row{flex-direction:row}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-8xl{font-size:6rem;line-height:1}.md\:text-lg{font-size:1.125rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}}</style></head>
+<body>
+
+    <div id="canvas-container"><canvas width="633" height="653" style="display: block; width: 633px; height: 653px;"></canvas></div>
+    
+    <div class="scroll-indicator-text">Scroll to explore</div>
+    <div class="scroll-line-fixed"></div>
+
+    <main class="container mx-auto px-6 max-w-6xl">
+
+        <!-- HERO -->
+        <section class="min-h-screen flex flex-col justify-center items-center text-center">
+            <div class="reveal p-12 relative active">
+                <div class="absolute top-0 left-0 w-8 h-8 border-t border-l border-white/30"></div>
+                <div class="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-white/30"></div>
+
+                <p class="text-xs tracking-[0.5em] uppercase text-gray-400 mb-8">Curriculum Vitae</p>
+                <h1 class="text-6xl md:text-8xl text-white mb-6 leading-none tracking-tight">
+                    JUAN CARLOS<br>
+                    <span class="text-slate-400 font-light italic text-4xl md:text-6xl">Ruiz Rodríguez</span>
+                </h1>
+                
+                <h2 class="text-sm md:text-lg text-white uppercase tracking-[0.3em] font-light mt-8 border-t border-white/10 pt-8 inline-block">
+                    Office Manager &amp; Business Operations Specialist
+                </h2>
+                
+                <div class="mt-12 flex flex-wrap justify-center gap-8 text-sm text-gray-400 font-light tracking-wide">
+                    <span class="hover:text-white transition"><i class="fas fa-map-marker-alt mr-2"></i>Málaga, España</span>
+                    <span class="hover:text-white transition"><i class="fas fa-phone mr-2"></i>652 90 60 56</span>
+                    <span class="hover:text-white transition"><i class="fas fa-envelope mr-2"></i>J.C-Ruiz@outlook.es</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- PERFIL -->
+        <section class="py-32 max-w-4xl mx-auto">
+            <div class="glass-card reveal active">
+                <h3 class="text-3xl mb-8 font-serif italic">Perfil Profesional</h3>
+                <p class="text-lg leading-loose text-justify font-light">
+                    Gestor administrativo versátil con sólida formación financiera y visión comercial. 
+                    <strong style="font-weight: 500; border-bottom: 1px solid #cbd5e1;">Experiencia probada en la optimización de operaciones de oficina (Back-office)</strong>, 
+                    gestión de relaciones con proveedores y soporte directo a la Dirección General. 
+                    Experto en el uso de Excel para el control de costes y facturación, combinando rigor analítico 
+                    con habilidades de comunicación desarrolladas en entornos internacionales y de ventas. 
+                    Busco aportar orden, eficiencia y control de gestión en un rol de Office Manager.
+                </p>
+            </div>
+        </section>
+
+        <!-- HABILIDADES -->
+        <section class="py-20">
+            <div class="reveal mb-16 text-center active">
+                <h3 class="text-3xl text-white font-serif italic border-b border-white/10 pb-4 inline-block px-10">Habilidades y Competencias</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass-card reveal p-10 active">
+                    <h4 class="text-2xl mb-8 font-serif font-bold">Administración &amp; Finanzas</h4>
+                    <ul class="space-y-4 text-sm font-light">
+                        <li class="flex items-center gap-3"><span class="w-1 h-1 bg-slate-400 rounded-full"></span>Facturación y Conciliación</li>
+                        <li class="flex items-center gap-3"><span class="w-1 h-1 bg-slate-400 rounded-full"></span>Control de Gastos</li>
+                        <li class="flex items-center gap-3"><span class="w-1 h-1 bg-slate-400 rounded-full"></span>Gestión de Proveedores</li>
+                        <li class="flex items-center gap-3"><span class="w-1 h-1 bg-slate-400 rounded-full"></span>Logística de Oficina</li>
+                        <li class="flex items-center gap-3"><span class="w-1 h-1 bg-slate-400 rounded-full"></span>Gestión de Agenda</li>
+                    </ul>
+                </div>
+                <div class="glass-card reveal p-10 active">
+                    <h4 class="text-2xl mb-8 font-serif font-bold">Digital Tools</h4>
+                    <ul class="space-y-4 text-sm font-light">
+                        <li class="flex items-center gap-3"><span class="w-1 h-1 bg-slate-400 rounded-full"></span>Excel Avanzado</li>
+                        <li class="pl-4 text-xs text-slate-400 italic">(Tablas Dinámicas, Funciones)</li>
+                        <li class="flex items-center gap-3"><span class="w-1 h-1 bg-slate-400 rounded-full"></span>Office 365 &amp; Google Workspace</li>
+                        <li class="flex items-center gap-3"><span class="w-1 h-1 bg-slate-400 rounded-full"></span>CRM Basics</li>
+                        <li class="flex items-center gap-3"><span class="w-1 h-1 bg-slate-400 rounded-full"></span>Canva</li>
+                    </ul>
+                </div>
+                <div class="glass-card reveal p-10 active">
+                    <h4 class="text-2xl mb-8 font-serif font-bold">Soft Skills</h4>
+                    <ul class="space-y-4 text-sm font-light">
+                        <li class="flex items-center gap-3"><span class="w-1 h-1 bg-slate-400 rounded-full"></span>Negociación Proveedores</li>
+                        <li class="flex items-center gap-3"><span class="w-1 h-1 bg-slate-400 rounded-full"></span>Resolución de Conflictos</li>
+                        <li class="flex items-center gap-3"><span class="w-1 h-1 bg-slate-400 rounded-full"></span>Adaptabilidad Intercultural</li>
+                        <li class="flex items-center gap-3"><span class="w-1 h-1 bg-slate-400 rounded-full"></span>Atención VIP</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPERIENCIA -->
+        <section class="py-32">
+            <div class="section-header reveal mb-20 active">
+                <span class="text-4xl mr-4 text-white/20">01.</span>
+                <h3 class="text-4xl text-white">Experiencia Profesional</h3>
+            </div>
+
+            <!-- JOB 1 -->
+            <div class="mb-20 reveal active">
+                <div class="glass-card">
+                    <div class="flex flex-col md:flex-row justify-between items-baseline mb-10 border-b pb-6">
+                        <div>
+                            <h4 class="text-2xl font-bold tracking-wide">Office Manager &amp; Marketing Coordinator</h4>
+                            <p class="uppercase tracking-wider text-xs mt-2" style="color:#64748b">Grupo Gestión Diez S.L. | Construcción</p>
+                        </div>
+                        <span class="border border-slate-300 px-4 py-2 text-xs uppercase tracking-widest mt-4 md:mt-0 font-bold text-slate-600">Ene 2021 - Presente</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div class="card-divider">
+                            <strong class="block mb-3 font-serif text-lg italic">Centralización</strong>
+                            <p class="text-sm leading-relaxed font-light">Actúo como enlace único entre Dirección y la auditoría externa, asegurando el cumplimiento fiscal y laboral al 100% para evitar sanciones.</p>
+                        </div>
+                        <div class="card-divider">
+                            <strong class="block mb-3 font-serif text-lg italic">Control Financiero</strong>
+                            <p class="text-sm leading-relaxed font-light">Implementé cuadros de mando mediante plantillas automatizadas en Excel, reduciendo el tiempo de gestión administrativa y eliminando errores en los cierres.</p>
+                        </div>
+                        <div class="card-divider">
+                            <strong class="block mb-3 font-serif text-lg italic">Transformación</strong>
+                            <p class="text-sm leading-relaxed font-light">Migré el archivo físico a un sistema de gestión documental en la nube, mejorando la recuperación de información crítica en un 50% y liberando espacio operativo.</p>
+                        </div>
+                        <div class="card-divider">
+                            <strong class="block mb-3 font-serif text-lg italic">Estrategia Marca</strong>
+                            <p class="text-sm leading-relaxed font-light">Dirijo la presencia digital garantizando que la captación de leads esté alineada con la capacidad productiva real de la empresa.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JOB 2 -->
+            <div class="mb-20 reveal active">
+                <div class="glass-card">
+                    <div class="flex flex-col md:flex-row justify-between items-baseline mb-10 border-b pb-6">
+                        <div>
+                            <h4 class="text-2xl font-bold tracking-wide">Sales Support &amp; Administrative Assistant</h4>
+                            <p class="uppercase tracking-wider text-xs mt-2" style="color:#64748b">Seguros Ocaso | Granada</p>
+                        </div>
+                        <span class="border border-slate-300 px-4 py-2 text-xs uppercase tracking-widest mt-4 md:mt-0 font-bold text-slate-600">Abr 2022 - Jun 2022</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="card-divider">
+                            <strong class="block mb-3 font-serif text-lg italic">Objetivos</strong>
+                            <p class="text-sm leading-relaxed font-light">Superé objetivos comerciales: Apliqué técnicas de venta consultiva y escucha activa para identificar necesidades y cerrar pólizas personalizadas.</p>
+                        </div>
+                        <div class="card-divider">
+                            <strong class="block mb-3 font-serif text-lg italic">Resolución</strong>
+                            <p class="text-sm leading-relaxed font-light">Resolví incidencias críticas: Actué como mediador en la gestión de siniestros complejos, logrando recuperar la confianza de clientes en riesgo de baja.</p>
+                        </div>
+                        <div class="card-divider">
+                            <strong class="block mb-3 font-serif text-lg italic">Integridad Datos</strong>
+                            <p class="text-sm leading-relaxed font-light">Garanticé la integridad de datos: Mantuve la base de datos actualizada diariamente, asegurando un seguimiento preciso de renovaciones y expedientes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JOB 3 -->
+            <div class="mb-20 reveal active">
+                <div class="glass-card">
+                    <div class="flex flex-col md:flex-row justify-between items-baseline mb-10 border-b pb-6">
+                        <div>
+                            <h4 class="text-2xl font-bold tracking-wide">International Operations Associate (Acting Manager)</h4>
+                            <p class="uppercase tracking-wider text-xs mt-2" style="color:#64748b">Oxfam Cork, Irlanda</p>
+                        </div>
+                        <span class="border border-slate-300 px-4 py-2 text-xs uppercase tracking-widest mt-4 md:mt-0 font-bold text-slate-600">Verano 2021</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="card-divider">
+                            <strong class="block mb-3 font-serif text-lg italic">Liderazgo</strong>
+                            <p class="text-sm leading-relaxed font-light">Asumí el liderazgo operativo: Designado como Acting Manager para coordinar equipos multiculturales en ausencia de la gerencia, garantizando la continuidad del servicio.</p>
+                        </div>
+                        <div class="card-divider">
+                            <strong class="block mb-3 font-serif text-lg italic">Cash Flow</strong>
+                            <p class="text-sm leading-relaxed font-light">Gestioné flujos de efectivo: Ejecuté arqueos de caja y conciliaciones diarias en moneda extranjera con precisión, manteniendo un registro de discrepancias del 0%.</p>
+                        </div>
+                        <div class="card-divider">
+                            <strong class="block mb-3 font-serif text-lg italic">Logística</strong>
+                            <p class="text-sm leading-relaxed font-light">Optimicé la logística interna: Reorganicé los procesos de almacén (back-of-house) para acelerar la reposición de stock en tienda.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FORMACIÓN -->
+        <section class="py-24 mb-20">
+             <div class="section-header reveal mb-16 active">
+                <span class="text-4xl mr-4 text-white/20">02.</span>
+                <h3 class="text-4xl text-white">Educación e Idiomas</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                <div class="glass-card reveal active">
+                    <h4 class="text-xl font-bold mb-4">Grado en Administración y Dirección de Empresas (ADE)</h4>
+                    <p class="mb-2">Universidad de Córdoba | Finalización: 2026</p>
+                    <p class="text-xs uppercase tracking-wider mt-4 border-t pt-4 border-slate-200" style="color:#94a3b8">Cursando en modalidad compatible con actividad profesional.</p>
+                </div>
+                <div class="glass-card reveal active">
+                    <h4 class="text-xl font-bold mb-4">Técnico Superior en Administración y Finanzas</h4>
+                    <p class="mb-6">IES Luis Bueno Crespo | 2020 - 2022</p>
+                    <div class="bg-slate-100 p-4 rounded-sm">
+                        <h4 class="text-md font-bold">Financial Planning for Young Adults</h4>
+                        <p class="text-xs mt-1" style="color:#64748b">University of Illinois Urbana-Champaign | 2021</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card reveal active">
+                <h4 class="text-2xl font-serif mb-10 border-b pb-4">Idiomas</h4>
+                <div class="flex flex-col md:flex-row gap-16">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-end mb-3">
+                            <span class="text-xl font-light">Español</span>
+                            <span class="text-xs uppercase tracking-widest border border-slate-300 px-2 py-1 text-slate-500">Nativo</span>
+                        </div>
+                        <div class="w-full bg-slate-200 h-[1px]"><div class="bg-slate-600 h-full w-full"></div></div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-end mb-3">
+                            <span class="text-xl font-light">Inglés</span>
+                            <span class="text-xs uppercase tracking-widest border border-slate-300 px-2 py-1 text-slate-500">B1 / B2 Profesional</span>
+                        </div>
+                        <div class="w-full bg-slate-200 h-[1px]"><div class="bg-slate-600 h-full w-[70%]"></div></div>
+                        <p class="text-sm mt-4 font-light leading-relaxed">Experiencia laboral demostrable en Irlanda y manejo fluido en entornos de negocios.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="py-32 text-center relative z-10 border-t border-white/5">
+            <h3 class="text-5xl font-serif text-white mb-16 italic">Let's build together.</h3>
+            <div class="flex justify-center gap-8">
+                <a href="mailto:J.C-Ruiz@outlook.es" class="cta-btn">Contactar</a>
+                <a href="https://linkedin.com/in/juancarlosruiz" target="_blank" class="cta-btn">LinkedIn</a>
+            </div>
+            <p class="text-gray-600 text-[10px] uppercase tracking-[0.4em] mt-20">© 2025 Juan Carlos Ruiz Rodríguez</p>
+        </footer>
+
+    </main>
+
+    <!-- SCRIPT THREE.JS -->
+    <script>
+        window.onload = function() {
+            initThreeJS();
+            // Fallback: Si en 200ms no ha arrancado el 3D, mostramos el contenido igual
+            setTimeout(() => {
+                document.querySelectorAll('.reveal').forEach(r => r.classList.add('active'));
+            }, 200);
+        };
+
+        function initThreeJS() {
+            // Protección si la librería no carga
+            if (typeof THREE === 'undefined') {
+                console.warn("Three.js no cargó. Mostrando versión estática.");
+                return;
+            }
+
+            const canvasContainer = document.getElementById('canvas-container');
+            if (!canvasContainer) return;
+
+            // Escena y Cámara
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x020408); 
+            scene.fog = new THREE.Fog(0x020408, 20, 90);
+
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            canvasContainer.appendChild(renderer.domElement);
+
+            // --- 1. CIUDAD PROCEDURAL (SKYLINE) ---
+            function createBuildingTexture() {
+                const canvas = document.createElement('canvas');
+                canvas.width = 64; canvas.height = 128;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#111'; ctx.fillRect(0,0,64,128);
+                ctx.fillStyle = '#fffee0';
+                for(let y=10; y<120; y+=4) {
+                    if(Math.random() > 0.4) {
+                        for(let x=4; x<60; x+=6) {
+                            if(Math.random() > 0.3) ctx.fillRect(x,y,2,3);
+                        }
+                    }
+                }
+                const tex = new THREE.CanvasTexture(canvas);
+                tex.magFilter = THREE.NearestFilter;
+                return tex;
+            }
+
+            const cityGroup = new THREE.Group();
+            const buildingGeo = new THREE.BoxGeometry(1,1,1);
+            for (let i = 0; i < 60; i++) {
+                const tex = createBuildingTexture();
+                const mat = new THREE.MeshBasicMaterial({ map: tex });
+                const building = new THREE.Mesh(buildingGeo, mat);
+                building.position.set((Math.random()-0.5)*120, -10, -60-(Math.random()*40));
+                building.scale.set(4+Math.random()*5, 20+Math.random()*40, 4+Math.random()*5);
+                cityGroup.add(building);
+            }
+            scene.add(cityGroup);
+
+            // --- 2. ESTRUCTURA PASILLO ---
+            const floorGeo = new THREE.PlaneGeometry(100, 200);
+            const floorMat = new THREE.MeshBasicMaterial({ color: 0x050505 });
+            const floor = new THREE.Mesh(floorGeo, floorMat);
+            floor.rotation.x = -Math.PI / 2; floor.position.y = -5;
+            scene.add(floor);
+
+            const floorGrid = new THREE.GridHelper(100, 50, 0x333333, 0x111111);
+            floorGrid.position.y = -4.9;
+            scene.add(floorGrid);
+
+            const ceilingGeo = new THREE.PlaneGeometry(100, 200);
+            const ceilingMat = new THREE.MeshBasicMaterial({ color: 0x020202 });
+            const ceiling = new THREE.Mesh(ceilingGeo, ceilingMat);
+            ceiling.rotation.x = Math.PI / 2; ceiling.position.y = 10;
+            scene.add(ceiling);
+
+            // Columnas y luces
+            const lightStripGeo = new THREE.PlaneGeometry(2, 8);
+            const lightMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent:true, opacity:0.1 });
+            const columnGeo = new THREE.BoxGeometry(1, 20, 1);
+            const columnMat = new THREE.MeshBasicMaterial({ color: 0x111111 });
+
+            for(let z=0; z<20; z++) {
+                const sl = new THREE.Mesh(lightStripGeo, lightMat); sl.rotation.x = Math.PI/2; sl.position.set(-10, 9.9, -z*10+20); scene.add(sl);
+                const sr = new THREE.Mesh(lightStripGeo, lightMat); sr.rotation.x = Math.PI/2; sr.position.set(10, 9.9, -z*10+20); scene.add(sr);
+                if(z < 15) {
+                    const cl = new THREE.Mesh(columnGeo, columnMat); cl.position.set(-20, 2.5, -z*15+10); scene.add(cl);
+                    const cr = new THREE.Mesh(columnGeo, columnMat); cr.position.set(20, 2.5, -z*15+10); scene.add(cr);
+                }
+            }
+
+            // --- 3. PAPELES FLOTANTES (LATERALES) ---
+            const floatingItems = [];
+            const paperGeo = new THREE.PlaneGeometry(1, 1.4);
+            const paperMat = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity: 0.7 });
+
+            for(let i=0; i<35; i++) {
+                const paper = new THREE.Mesh(paperGeo, paperMat);
+                let posX = (Math.random() - 0.5) * 50;
+                if (posX > -14 && posX < 14) posX = posX > 0 ? posX + 15 : posX - 15; // Despejar centro
+
+                paper.position.set(posX, (Math.random()-0.5)*20, (Math.random()-0.5)*60);
+                paper.rotation.x = Math.random() * Math.PI;
+                paper.rotation.z = Math.random() * Math.PI;
+                scene.add(paper);
+                floatingItems.push({mesh: paper, speed: 0.002 + Math.random()*0.005});
+            }
+
+            camera.position.z = 5;
+
+            // --- LOGICA ANIMACIÓN Y SCROLL ---
+            // Inicializar las tarjetas como ocultas para animarlas, SOLO SI JS FUNCIONA
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach(r => r.classList.add('js-hidden'));
+
+            let scrollY = window.scrollY;
+            let mouseX = 0, mouseY = 0;
+
+            window.addEventListener('scroll', () => {
+                scrollY = window.scrollY;
+                checkReveal();
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX - window.innerWidth/2) * 0.001;
+                mouseY = (e.clientY - window.innerHeight/2) * 0.001;
+            });
+
+            function checkReveal() {
+                const windowHeight = window.innerHeight;
+                reveals.forEach(r => {
+                    const top = r.getBoundingClientRect().top;
+                    if(top < windowHeight - 100) {
+                        r.classList.remove('js-hidden');
+                        r.classList.add('active');
+                    }
+                });
+            }
+            // Check inicial
+            checkReveal();
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Movimiento cámara
+                camera.position.z = 5 - (scrollY * 0.015);
+                camera.rotation.y = -mouseX * 0.1;
+                camera.rotation.x = -mouseY * 0.1;
+
+                // Papeles
+                floatingItems.forEach(item => {
+                    item.mesh.position.y -= item.speed; 
+                    item.mesh.rotation.x += 0.01; 
+                    item.mesh.rotation.z += 0.005;
+                    if(item.mesh.position.y < -5) item.mesh.position.y = 10;
+                });
+
+                // Ciudad parallax
+                cityGroup.position.x = -mouseX * 2;
+
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+    </script>
+
+
+</body></html>
